@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,13 +23,20 @@ public class MainActivity extends AppCompatActivity {
     private static final String REDIRECT_URI = "http://localhost:8888/callback";
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    TextView textView = findViewById(R.id.current_song);
-    Button skip = findViewById(R.id.skip_button);
+    TextView textView;
+    Button skip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onStart() {
+        textView = (TextView) findViewById(R.id.current);
+        skip = (Button) findViewById(R.id.skip_button);
+
         skip.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PLAY");
@@ -39,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-    @Override
-    protected void onStart() {
         super.onStart();
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
