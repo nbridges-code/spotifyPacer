@@ -39,9 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
         skip.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PLAY");
-                pauseSpotify.setPackage("com.spotify.music");
-                sendBroadcast(pauseSpotify);
+                skipSong.skip(MainActivity.this);
+//                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
+//                pauseSpotify.setPackage("com.spotify.music");
+//                sendBroadcast(pauseSpotify);
             }
         });
 
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
                         // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
+
+        requestAuth.requestAuth(MainActivity.this);
 
     }
 
