@@ -10,14 +10,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 public class requestAuth {
+    private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
+    private static final String ENCODED_REDIRECT_URI = "http%3A%2F%2Flocalhost%3A8888%2Fcallback";
+
     public static void requestAuth(Context c) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(c);
-        String url = "https://accounts.spotify.com/authorize";
+        String url = "https://accounts.spotify.com/authorize?client_id=" + CLIENT_ID + "&response_type=code&redirect_uri=" + ENCODED_REDIRECT_URI + "&scope=user-modify-playback-state";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
