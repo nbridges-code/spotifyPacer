@@ -25,13 +25,13 @@ public class requestAuth {
                     @Override
                     public void onResponse(String response) {
                         Log.d("requestAuth", "response: " + response);
-                        Document document = Jsoup.parse(response);
-                        Log.d("requestAuth", "response_after_parsing: " + document);
+//                        Document document = Jsoup.parse(response);
+//                        Log.d("requestAuth", "response_after_parsing: " + document);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("skipSong", "That didn't work!");
+                Log.d("requestAuth", "That didn't work!");
             }
         });
 

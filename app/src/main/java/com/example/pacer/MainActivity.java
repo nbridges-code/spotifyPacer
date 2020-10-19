@@ -23,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String REDIRECT_URI = "http://localhost:8888/callback";
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    TextView textView;
-    Button skip;
+    TextView textView = (TextView) findViewById(R.id.current);
+    Button pause = (Button) findViewById(R.id.pause);
+    TextView pauseState = (TextView) findViewById(R.id.pause_state);
+    Button skip = (Button) findViewById(R.id.skip_button);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        textView = (TextView) findViewById(R.id.current);
-        skip = (Button) findViewById(R.id.skip_button);
 
         skip.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -92,6 +92,23 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        pause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mSpotifyAppRemote.getPlayerApi()
+                        .subscribeToPlayerState()
+                        .setEventCallback(new Subscription.EventCallback<PlayerState>() {
+                            @Override
+                            public void onEvent(PlayerState playerState) {
+                                if(playerState.isPaused) {
+                                    pauseState.setText("Paused");
+                                }else{
+                                    pauseState.setText("Not paused");
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     @Override
