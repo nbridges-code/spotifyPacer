@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String REDIRECT_URI = "http://localhost:8888/callback";
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    TextView textView = (TextView) findViewById(R.id.current);
-    Button pause = (Button) findViewById(R.id.pause);
-    TextView pauseState = (TextView) findViewById(R.id.pause_state);
-    Button skip = (Button) findViewById(R.id.skip_button);
+//    TextView textView = (TextView) findViewById(R.id.current);
+//    Button pause = (Button) findViewById(R.id.pause);
+//    TextView pauseState = (TextView) findViewById(R.id.pause_state);
+//    Button skip = (Button) findViewById(R.id.skip_button);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +37,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
 
-        skip.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                skipSong.skip(MainActivity.this);
-//                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
-//                pauseSpotify.setPackage("com.spotify.music");
-//                sendBroadcast(pauseSpotify);
-            }
-        });
+//        skip.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                skipSong.skip(MainActivity.this);
+////                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
+////                pauseSpotify.setPackage("com.spotify.music");
+////                sendBroadcast(pauseSpotify);
+//            }
+//        });
 
         super.onStart();
         ConnectionParams connectionParams =
@@ -87,28 +87,28 @@ public class MainActivity extends AppCompatActivity {
                     public void onEvent(PlayerState playerState) {
                         final Track track = playerState.track;
                         if (track != null) {
-                            textView.setText(track.name + " by " + track.artist.name);
+                            //textView.setText(track.name + " by " + track.artist.name);
                             Log.d("MainActivity", track.name + " by " + track.artist.name);
                         }
                     }
                 });
 
-        pause.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mSpotifyAppRemote.getPlayerApi()
-                        .subscribeToPlayerState()
-                        .setEventCallback(new Subscription.EventCallback<PlayerState>() {
-                            @Override
-                            public void onEvent(PlayerState playerState) {
-                                if(playerState.isPaused) {
-                                    pauseState.setText("Paused");
-                                }else{
-                                    pauseState.setText("Not paused");
-                                }
-                            }
-                        });
-            }
-        });
+//        pause.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                mSpotifyAppRemote.getPlayerApi()
+//                        .subscribeToPlayerState()
+//                        .setEventCallback(new Subscription.EventCallback<PlayerState>() {
+//                            @Override
+//                            public void onEvent(PlayerState playerState) {
+//                                if(playerState.isPaused) {
+//                                    //pauseState.setText("Paused");
+//                                }else{
+//                                    //pauseState.setText("Not paused");
+//                                }
+//                            }
+//                        });
+//            }
+//        });
     }
 
     @Override
