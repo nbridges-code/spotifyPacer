@@ -21,6 +21,9 @@ import com.spotify.protocol.types.Track;
 public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
     private static final String REDIRECT_URI = "http://localhost:8888/callback";
+    private static final String ACCESS_TOKEN = "BQCpHBjAKtSNK1GsgTSe5KGsW7Wi3lz6LFe0xz1DwUB3X8g59hmYJSYMgkPNDeyLgAtl7jhki-1rPViRboN8NDgcA1Ub_XyGB52_ts_DDDEyVcJXMYlZXSaFoZR4uIriqQgNOgMgaGKxVbd6cMjlY0h1";
+    private static final String REFRESCH_TOKEN = "AQBEA4FNjqAksqCJuZIZ5Wp8whyPpF5kcwNKa" + // There used to be newline here... dont know if that was necessary
+            "5N-PWj79Csn8FN6Ss4g1lCJ9HVa8kN64kvPhlxxR-t2gb5gyGEm42xihrKo1IX5uZX3AEVgdSuPy6qwDoKY0VZiOWfrZ7g";
     private SpotifyAppRemote mSpotifyAppRemote;
 
 //    TextView textView = (TextView) findViewById(R.id.current);
