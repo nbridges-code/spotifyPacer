@@ -17,37 +17,51 @@ import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
 
+import com.spotify.android.*;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
     private static final String REDIRECT_URI = "http://localhost:8888/callback";
     private static final String ACCESS_TOKEN = "BQCpHBjAKtSNK1GsgTSe5KGsW7Wi3lz6LFe0xz1DwUB3X8g59hmYJSYMgkPNDeyLgAtl7jhki-1rPViRboN8NDgcA1Ub_XyGB52_ts_DDDEyVcJXMYlZXSaFoZR4uIriqQgNOgMgaGKxVbd6cMjlY0h1";
-    private static final String REFRESCH_TOKEN = "AQBEA4FNjqAksqCJuZIZ5Wp8whyPpF5kcwNKa" + // There used to be newline here... dont know if that was necessary
+    private static final String REFRESH_TOKEN = "AQBEA4FNjqAksqCJuZIZ5Wp8whyPpF5kcwNKa" + // There used to be newline here... dont know if that was necessary
             "5N-PWj79Csn8FN6Ss4g1lCJ9HVa8kN64kvPhlxxR-t2gb5gyGEm42xihrKo1IX5uZX3AEVgdSuPy6qwDoKY0VZiOWfrZ7g";
+    private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
 
-//    TextView textView = (TextView) findViewById(R.id.current);
-//    Button pause = (Button) findViewById(R.id.pause);
-//    TextView pauseState = (TextView) findViewById(R.id.pause_state);
-//    Button skip = (Button) findViewById(R.id.skip_button);
+    //TextView textView = (TextView) findViewById(R.id.current);
+    Button pause;
+    TextView pauseState;
+    Button skip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // The only thing that's different is we added the 5 lines below.
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+        builder.setScopes(new String[]{"user-read-private", "streaming", "user-modify-playback-state"});
+        AuthenticationRequest request = builder.build();
+
+        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
     }
 
     @Override
     protected void onStart() {
 
-//        skip.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                skipSong.skip(MainActivity.this);
-////                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
-////                pauseSpotify.setPackage("com.spotify.music");
-////                sendBroadcast(pauseSpotify);
-//            }
-//        });
+        skip = (Button) findViewById(R.id.skip_button);
+        skip.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                skipSong.skip(MainActivity.this);
+//                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
+//                pauseSpotify.setPackage("com.spotify.music");
+//                sendBroadcast(pauseSpotify);
+            }
+        });
 
         super.onStart();
         ConnectionParams connectionParams =
@@ -76,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        requestAuth.requestAuth(MainActivity.this);
-
     }
 
     private void connected() {
@@ -96,22 +108,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-//        pause.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                mSpotifyAppRemote.getPlayerApi()
-//                        .subscribeToPlayerState()
-//                        .setEventCallback(new Subscription.EventCallback<PlayerState>() {
-//                            @Override
-//                            public void onEvent(PlayerState playerState) {
-//                                if(playerState.isPaused) {
-//                                    //pauseState.setText("Paused");
-//                                }else{
-//                                    //pauseState.setText("Not paused");
-//                                }
-//                            }
-//                        });
-//            }
-//        });
+        pause = (Button) findViewById(R.id.pause);
+        pauseState = (TextView) findViewById(R.id.pause_state);
+        pause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mSpotifyAppRemote.getPlayerApi()
+                        .subscribeToPlayerState()
+                        .setEventCallback(new Subscription.EventCallback<PlayerState>() {
+                            @Override
+                            public void onEvent(PlayerState playerState) {
+                                if(playerState.isPaused) {
+                                    pauseState.setText("Paused");
+                                }else{
+                                    pauseState.setText("Not paused");
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     @Override
