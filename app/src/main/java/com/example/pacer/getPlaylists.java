@@ -10,10 +10,38 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-public class requestAuth {
+import org.jsoup.helper.HttpConnection;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+
+public class getPlaylists {
     private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
     private static final String ENCODED_REDIRECT_URI = "http%3A%2F%2Flocalhost%3A8888%2Fcallback";
+    private static String playlistName = "https://api.spotify.com/v1/search?q=name:"; // GET
 
+    public static void getPlaylists(int bpm) throws IOException {
+        String tempName = playlistName + bpm + "&type=playlist";
+        URL url = new URL(tempName);
+        // Instantiate the RequestQueue.
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            urlConnection.setRequestMethod("GET");
+            String responseMessage = urlConnection.getResponseMessage();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } finally {
+            urlConnection.disconnect();
+        }
+
+    }
+
+    /*
     public static void requestAuth(Context c) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(c);
@@ -62,4 +90,5 @@ public class requestAuth {
         );
         queue.add(postRequest);
     }
+    */
 }
