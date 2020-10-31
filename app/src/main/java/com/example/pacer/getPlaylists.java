@@ -1,6 +1,7 @@
 package com.example.pacer;
 
 import android.content.Context;
+import android.text.Editable;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -25,7 +26,7 @@ public class getPlaylists {
     private static final String ENCODED_REDIRECT_URI = "http%3A%2F%2Flocalhost%3A8888%2Fcallback";
     private static String playlistName = "https://api.spotify.com/v1/search?q=name:"; // GET
 
-    public static void getPlaylists(int bpm) throws IOException {
+    public getPlaylists(Integer bpm) throws IOException {
         String tempName = playlistName + bpm + "&type=playlist";
         URL url = new URL(tempName);
         // Instantiate the RequestQueue.

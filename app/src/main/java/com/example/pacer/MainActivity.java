@@ -3,10 +3,12 @@ package com.example.pacer;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.RemoteControlClient;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -22,6 +24,8 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+import java.io.IOException;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     Button pause;
     TextView pauseState;
     Button skip;
+    Button submit;
+    EditText bpmInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void connected() {
         // Play a playlist
+        /*
         mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX0XUsuxWHRQd");
         mSpotifyAppRemote.getPlayerApi()
                 .subscribeToPlayerState()
@@ -107,6 +114,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+         */
+        submit = (Button) findViewById(R.id.submit_button);
+        bpmInput = (EditText) findViewById(R.id.editBpm);
+        final getPlaylists[] temp = {null};
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                int bpm = Integer.parseInt(String.valueOf(bpmInput.getText()));
+                try {
+                    temp[0] = new getPlaylists(bpm);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         pause = (Button) findViewById(R.id.pause);
         pauseState = (TextView) findViewById(R.id.pause_state);
