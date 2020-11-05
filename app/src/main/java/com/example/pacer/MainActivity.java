@@ -7,8 +7,11 @@ import android.media.RemoteControlClient;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -25,16 +28,20 @@ import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
     private static final String REDIRECT_URI = "http://localhost:8888/callback";
-    private static final String ACCESS_TOKEN = "BQCpHBjAKtSNK1GsgTSe5KGsW7Wi3lz6LFe0xz1DwUB3X8g59hmYJSYMgkPNDeyLgAtl7jhki-1rPViRboN8NDgcA1Ub_XyGB52_ts_DDDEyVcJXMYlZXSaFoZR4uIriqQgNOgMgaGKxVbd6cMjlY0h1";
     private static final String REFRESH_TOKEN = "AQBEA4FNjqAksqCJuZIZ5Wp8whyPpF5kcwNKa" + // There used to be newline here... dont know if that was necessary
             "5N-PWj79Csn8FN6Ss4g1lCJ9HVa8kN64kvPhlxxR-t2gb5gyGEm42xihrKo1IX5uZX3AEVgdSuPy6qwDoKY0VZiOWfrZ7g";
     private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
+    private static String playlistName = "https://api.spotify.com/v1/search?q=name:"; // GET
+    public String access = "";
 
     //TextView textView = (TextView) findViewById(R.id.current);
     Button pause;
@@ -58,17 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-
-        skip = (Button) findViewById(R.id.skip_button);
-        skip.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                skipSong.skip(MainActivity.this);
-//                Intent pauseSpotify = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
-//                pauseSpotify.setPackage("com.spotify.music");
-//                sendBroadcast(pauseSpotify);
-            }
-        });
-
         super.onStart();
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
@@ -117,35 +113,16 @@ public class MainActivity extends AppCompatActivity {
          */
         submit = (Button) findViewById(R.id.submit_button);
         bpmInput = (EditText) findViewById(R.id.editBpm);
-        final getPlaylists[] temp = {null};
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 int bpm = Integer.parseInt(String.valueOf(bpmInput.getText()));
-                try {
-                    temp[0] = new getPlaylists(bpm);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+                new getPlaylists(new VolleyCallBack() {
+                    @Override
+                    public void onSuccess() {
 
-        pause = (Button) findViewById(R.id.pause);
-        pauseState = (TextView) findViewById(R.id.pause_state);
-        pause.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mSpotifyAppRemote.getPlayerApi()
-                        .subscribeToPlayerState()
-                        .setEventCallback(new Subscription.EventCallback<PlayerState>() {
-                            @Override
-                            public void onEvent(PlayerState playerState) {
-                                if(playerState.isPaused) {
-                                    pauseState.setText("Paused");
-                                }else{
-                                    pauseState.setText("Not paused");
-                                }
-                            }
-                        });
+                    }
+                },MainActivity.this, bpm, access);
             }
         });
     }
@@ -155,4 +132,49 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         SpotifyAppRemote.disconnect(mSpotifyAppRemote);
     }
+
+    /*
+    private void getPlaylists(Integer bpm) throws IOException {
+        String tempName = playlistName + bpm + "&type=playlist";
+        URL url = new URL(tempName);
+        // Instantiate the RequestQueue.
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            urlConnection.setRequestMethod("GET");
+            String responseMessage = urlConnection.getResponseMessage();
+            Log.d("responseMessage: ", responseMessage);
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } finally {
+            urlConnection.disconnect();
+        }
+
+    }
+     */
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+
+            switch (response.getType()) {
+                // Response was successful and contains auth token
+                case TOKEN:
+                    access = response.getAccessToken();
+                    break;
+
+                // Auth flow returned an error
+                case ERROR:
+                    // Handle error response
+                    break;
+
+                // Most likely auth flow was cancelled
+                default:
+                    // Handle other cases
+            }
+        }
+    }
+
 }
