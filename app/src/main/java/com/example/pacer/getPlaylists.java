@@ -34,6 +34,7 @@ public class getPlaylists {
     private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
     private static final String ENCODED_REDIRECT_URI = "http%3A%2F%2Flocalhost%3A8888%2Fcallback";
     private static String playlistName = "https://api.spotify.com/v1/search?q="; // GET
+    private String playlistid = "";
 
     public getPlaylists(VolleyCallBack callBack, Context context, int bpm, String token) {
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -45,8 +46,7 @@ public class getPlaylists {
                     for (int n = 0; n < items.length(); n++) {
                         try {
                             JSONObject item = items.getJSONObject(n);
-                            // String name = String.valueOf(item.optJSONObject("name"));
-                            Log.d("getPlaylists", String.valueOf(item));
+                            Log.d("getPlaylists", String.valueOf(item.get("name")));
 
 //                            JSONObject object = items.getJSONObject(n);
 //                            object = object.optJSONObject("track");
@@ -57,6 +57,7 @@ public class getPlaylists {
                             e.printStackTrace();
                         }
                     }
+                    playlistid = (String) items.optJSONObject(0).opt("snapshot_id");
                     callBack.onSuccess();
                 }, error -> {
                     // TODO: Handle error
@@ -72,6 +73,10 @@ public class getPlaylists {
             }
         };
         queue.add(jsonObjectRequest);
+    }
+
+    public String getPlaylistId(){
+        return playlistid;
     }
 
     /*

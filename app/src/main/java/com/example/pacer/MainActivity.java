@@ -95,32 +95,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connected() {
-        // Play a playlist
-        /*
-        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX0XUsuxWHRQd");
-        mSpotifyAppRemote.getPlayerApi()
-                .subscribeToPlayerState()
-                .setEventCallback(new Subscription.EventCallback<PlayerState>() {
-                    @Override
-                    public void onEvent(PlayerState playerState) {
-                        final Track track = playerState.track;
-                        if (track != null) {
-                            //textView.setText(track.name + " by " + track.artist.name);
-                            Log.d("MainActivity", track.name + " by " + track.artist.name);
-                        }
-                    }
-                });
-         */
         submit = (Button) findViewById(R.id.submit_button);
         bpmInput = (EditText) findViewById(R.id.editBpm);
+        final getPlaylists[] temp = new getPlaylists[1];
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 int bpm = Integer.parseInt(String.valueOf(bpmInput.getText()));
-                new getPlaylists(new VolleyCallBack() {
+                temp[0] = new getPlaylists(new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
-
+                        mSpotifyAppRemote.getPlayerApi().play(temp[0].getPlaylistId());
+                        mSpotifyAppRemote.getPlayerApi()
+                                .subscribeToPlayerState()
+                                .setEventCallback(new Subscription.EventCallback<PlayerState>() {
+                                    @Override
+                                    public void onEvent(PlayerState playerState) {
+                                        final Track track = playerState.track;
+                                        if (track != null) {
+                                            //textView.setText(track.name + " by " + track.artist.name);
+                                            Log.d("MainActivity", track.name + " by " + track.artist.name);
+                                        }
+                                    }
+                                });
                     }
                 },MainActivity.this, bpm, access);
             }
