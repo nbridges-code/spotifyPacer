@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class getPlaylists {
-    private static final String CLIENT_ID = "83bbac4b860942f7813149bdc4093004";
-    private static final String ENCODED_REDIRECT_URI = "http%3A%2F%2Flocalhost%3A8888%2Fcallback";
     private static String playlistName = "https://api.spotify.com/v1/search?q="; // GET
     private String playlistid = "";
 
@@ -43,26 +41,29 @@ public class getPlaylists {
                 (Request.Method.GET, endpoint, null, response -> {
                     JSONObject playlists = response.optJSONObject("playlists");
                     JSONArray items = playlists.optJSONArray("items");
+                    int found = 0;
+                    boolean notDone = true;
                     for (int n = 0; n < items.length(); n++) {
                         try {
                             JSONObject item = items.getJSONObject(n);
+                            if(String.valueOf(item.get("name")).contains("bpm") && notDone){
+                                found = n;
+                                notDone = false;
+                            }
                             Log.d("getPlaylists", String.valueOf(item.get("name")));
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                    // TODO: Make sure it's a bpm playlist
-                    playlistid = (String) items.optJSONObject(0).opt("uri");
+                    playlistid = (String) items.optJSONObject(found).opt("uri");
                     callBack.onSuccess();
                 }, error -> {
-                    // TODO: Handle error
-
+                    Log.e("getPlaylist Error:", String.valueOf(error));
                 }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                //String token = sharedPreferences.getString("token", "");
                 String auth = "Bearer " + token;
                 headers.put("Authorization", auth);
                 return headers;
@@ -75,54 +76,4 @@ public class getPlaylists {
         return playlistid;
     }
 
-    /*
-    public static void requestAuth(Context c) {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(c);
-        String url = "https://accounts.spotify.com/authorize?client_id=" + CLIENT_ID + "&response_type=code&redirect_uri=" + ENCODED_REDIRECT_URI + "&scope=user-modify-playback-state";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("requestAuth", "response: " + response);
-//                        Document document = Jsoup.parse(response);
-//                        Log.d("requestAuth", "response_after_parsing: " + document);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("requestAuth", "That didn't work!");
-            }
-        });
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
-
-    public static void postRequest(Context c){
-        RequestQueue queue = Volley.newRequestQueue(c);
-        String url = "https://accounts.spotify.com/api/token";
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Error.Response", "L");
-                    }
-                }
-        );
-        queue.add(postRequest);
-    }
-    */
 }
