@@ -48,16 +48,12 @@ public class getPlaylists {
                             JSONObject item = items.getJSONObject(n);
                             Log.d("getPlaylists", String.valueOf(item.get("name")));
 
-//                            JSONObject object = items.getJSONObject(n);
-//                            object = object.optJSONObject("track");
-//
-//                            Song song = gson.fromJson(object.toString(), Song.class);
-//                            songs.add(song);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                    playlistid = (String) items.optJSONObject(0).opt("snapshot_id");
+                    // TODO: Make sure it's a bpm playlist
+                    playlistid = (String) items.optJSONObject(0).opt("uri");
                     callBack.onSuccess();
                 }, error -> {
                     // TODO: Handle error
